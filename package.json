@@ -4,16 +4,11 @@
   "description": "In thie workshop we explore how to create an API using ExpressJS.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.26.1",
-    "express": "^4.17.3",
-    "package": "^1.0.1"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.15"
+    "express": "^4.18.0"
   }
 }
