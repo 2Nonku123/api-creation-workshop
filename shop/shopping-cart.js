@@ -22,7 +22,7 @@ module.exports = function ShoppingCart(pool) {
       [userId]
     );
 
-	if(result.)
+
 
     return result.rows;
   }
