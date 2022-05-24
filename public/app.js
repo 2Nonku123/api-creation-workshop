@@ -1,4 +1,4 @@
-let seasonFilter = 'All';
+/*let seasonFilter = 'All';
 let genderFilter = 'All';
 
 const seasonOptions = document.querySelector('.seasons');
@@ -20,6 +20,7 @@ genderOptions.addEventListener('click', function(evt){
 	filterData();
 });
 
+
 function filterData() {
 	axios
 		.get(`/api/garments?gender=${genderFilter}&season=${seasonFilter}`)
@@ -28,9 +29,9 @@ function filterData() {
 				garments : result.data.garments
 			})
 		});
-}
+}*/
 
-priceRangeElem.addEventListener('change', function(evt){
+/*priceRangeElem.addEventListener('change', function(evt){
 	const maxPrice = evt.target.value;
 	showPriceRangeElem.innerHTML = maxPrice;
 	axios
@@ -40,6 +41,6 @@ priceRangeElem.addEventListener('change', function(evt){
 				garments : result.data.garments
 			})
 		});
-});
+});*/
 
-filterData();
+//filterData();

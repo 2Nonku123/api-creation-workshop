@@ -2,7 +2,7 @@
   "name": "api-creation-workshop",
   "version": "1.0.0",
   "description": "In thie workshop we explore how to create an API using ExpressJS.",
-  "main": "index.html",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,9 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
-    "bcrypt-nodejs": "^0.0.3",
     "dotenv": "^16.0.1",
-    "express": "^4.18.1",
+    "express": "^4.18.0",
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.16",
     "pg": "^8.7.3"

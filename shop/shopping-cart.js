@@ -22,8 +22,6 @@ module.exports = function ShoppingCart(pool) {
       [userId]
     );
 
-
-
     return result.rows;
   }
 

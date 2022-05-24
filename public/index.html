@@ -8,43 +8,19 @@
 	<title>Missy Tee - clothing store</title>
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js" defer></script>
 	<link rel="stylesheet" href="style.css">
 
-	<script class="garmentListTemplate" type="type/script-x">
-		<div>
-			{{garments.length}} <strong>garments found</strong>
-		</div>
-		<div class="garments">
-			{{#each garments}}
 
-		<div class="garment">
-		<img src="/images/{{img}}" alt="">
 
-		<form action="/garment/" method="post">
-			<input type="hidden" name="img" value="{{img}}" >
-			<div class="field" >
-				{{description}}
-			</div>
-			<div class="field">
-				<strong>{{price}}</strong>
-			</div>
-		</form>
-
-		<div class="hidden">
-			<button data-garmentId="{{id}}" >Add to cart</button>
-		</div>
-
-	</div>
-	{{/each}}
-		</div>
-	</script>
+	<script src="./garmentApp.js"></script>
 </head>
 
 <body>
-	<div class="container">
+	<div class="container" x-data="garmentData" x-init="loadGarments()">
 		<h1>Missy Tee - clothing store</h1>
 
-		<div class="login hidden">
+		<div class="login hidden" x-show="showLogin">
 			<strong>Logged in as</strong> <span class="username">@avermeulen</span>
 		</div>
 
@@ -53,41 +29,51 @@
 				<h2>Filter</h2>
 				<div class="genders">
 					<label>
-						<input type="radio" name="gender" value="All"> All
+						<input type="radio" name="gender" value="All" x-model="garmentFilter.gender"
+							x-on:change="loadGarments()"> All
 					</label>
 
 					<label>
-						<input type="radio" name="gender" value="Male"> Male
+						<input type="radio" name="gender" value="Male" x-model="garmentFilter.gender"
+							x-on:change="loadGarments()"> Male
 					</label>
 
 					<label>
-						<input type="radio" name="gender" value="Female"> Female
+						<input type="radio" name="gender" value="Female" x-model="garmentFilter.gender"
+							x-on:change="loadGarments()"> Female
 					</label>
 					<label>
-						<input type="radio" name="gender" value="Unisex"> Unisex
+						<input type="radio" name="gender" value="Unisex" x-model="garmentFilter.gender"
+							x-on:change="loadGarments()"> Unisex
 					</label>
 				</div>
 				<div class="seasons">
 					<label>
-						<input type="radio" name="season" value="All"> All
+						<input type="radio" name="season" value="All" x-model="garmentFilter.season"
+							x-on:change="loadGarments()"> All
 					</label>
 					<label>
-						<input type="radio" name="season" value="Summer"> Summer
+						<input type="radio" name="season" value="Summer" x-model="garmentFilter.season"
+							x-on:change="loadGarments()"> Summer
 					</label>
 					<label>
-						<input type="radio" name="season" value="Winter"> Winter
+						<input type="radio" name="season" value="Winter" x-model="garmentFilter.season"
+							x-on:change="loadGarments()"> Winter
 					</label>
 					<label>
-						<input type="radio" name="season" value="All Seasons"> All seasons
+						<input type="radio" name="season" value="All Seasons" x-model="garmentFilter.season"
+							x-on:change="loadGarments()"> All
+						seasons
 					</label>
 				</div>
 				<div>
 					Filter by price range:
-					<input type="range" name="priceRange" max="1000" step="50" class="priceRange" value="0">
-					R<span class="showPriceRange">0</span>.00
+					<input type="range" name="priceRange" max="1000" step="50" class="priceRange" value="0"
+						x-model="garmentFilter.price" x-on:change="loadGarmentByPrice()">
+					R<span class="showPriceRange" x-text="garmentFilter.price">0</span>.00
 				</div>
 			</div>
-			<div class="cart hidden">
+			<div class="cart hidden" x-show="garmentCart.length>0">
 				<h2>Shopping Cart</h2>
 				<table>
 					<thead>
@@ -98,23 +84,22 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>Items xyz</td>
-							<td>3</td>
-							<td>R17.25</td>
-						</tr>
-						<tr>
-							<td>Items xyz</td>
-							<td>3</td>
-							<td>R17.25</td>
-						</tr>
+
+						<template x-for="garment in garmentCart" :key="garment.id">
+							<tr>
+								<td><span x-text="garment.description"></span></td>
+								<td><span x-text="garment.qty"></span></td>
+								<td>R<span x-text="garment.price"></span></td>
+							</tr>
+
+						</template>
 
 					</tbody>
 					<tfoot>
 						<tr>
 							<th>Total</th>
 							<td></td>
-							<th>R34.50</th>
+							<th>R<span x-text="cartTotalDisplay()"></span></th>
 						</tr>
 					</tfoot>
 				</table>
@@ -124,17 +109,17 @@
 			</div>
 		</div>
 
-		<div class="message hidden">
+		<div class="message" x-show="errorMessage.length>0" x-text="errorMessage">
 
 		</div>
 
 		<div class="addGarment ">
 
-			<div class="add button mt1">
-				<a href="">Add garmet</a>
+			<div class="">
+				<a @click="showAddGarment = true" href="#">Add garmet</a>
 			</div>
 
-			<div class="add garment hidden">
+			<div class="add garment" x-show="showAddGarment">
 				<h2>Add garment</h2>
 				<img src="/images/{{img}}" alt="">
 
@@ -142,31 +127,31 @@
 
 				<div class="field">
 					<label for="">Description</label>
-					<input type="text" name="description" class="description">
+					<input type="text" name="description" class="description" x-model="newGarment.description">
 				</div>
 				<div class="field">
 					<label for="">Image</label>
-					<input type="text" name="img" class="img">
+					<input type="text" name="img" class="img" x-model="newGarment.img">
 				</div>
 				<div class="field">
 					<label for="">Price</label>
-					<input type="number" name="price" step="0.01" class="price">
+					<input type="number" name="price" step="0.01" class="price" x-model="newGarment.price">
 				</div>
 				<div class="field">
 					<label for="">Gender</label>
 					<div>
-						<input type="text" name="gender" class="gender">
+						<input type="text" name="gender" class="gender" x-model="newGarment.gender">
 					</div>
 				</div>
 				<div class="field">
 					<label for="">Season</label>
 					<div>
-						<input type="text" name="season" class="season">
+						<input type="text" name="season" class="season" x-model="newGarment.season">
 					</div>
 				</div>
 				<div class="mt1">
-					<input type="button" name="action" value="Add" class="addGarmentBtn">
-					<input type="button" name="action" value="Hide" class="hideAddGarmetBtn">
+					<input type="button" name="action" value="Add" @click="addGarment()">
+					<input type="button" name="action" value="Hide" @click="showAddGarment = false">
 				</div>
 				<!-- </form> -->
 			</div>
@@ -179,13 +164,40 @@
 			<h2>Garments</h2>
 
 			<div class="searchResults">
+				<div>
+					<span x-text="garments.length"></span> <strong>garments found</strong>
+				</div>
+
+
+				<div class="garments">
+
+					<template x-for="garment in garments" :key="garment.id">
+						<div class="garment">
+							<img :src="'images/'+garment.img" alt="">
+
+							<form action="/garment/" method="post">
+								<input type="hidden" name="img" value="" x-text="garment.img">
+								<div class="field" x-text="garment.description">
+
+								</div>
+								<div class="field">
+									<strong x-text="garment.price"></strong>
+								</div>
+							</form>
+
+							<div class="hidden">
+								<button @click="addCartGarment(garment.id)">Add to cart</button>
+							</div>
+
+						</div>
+
+					</template>
+				</div>
 
 			</div>
 		</div>
 	</div>
-	<script src="app.js"></script>
-	<script src="field-manager.js"></script>
-	<script src="add-garment.js"></script>
+
 </body>
 
 </html>
